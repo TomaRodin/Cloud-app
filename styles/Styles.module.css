@@ -1,0 +1,68 @@
+.container {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    margin-left: 500px;
+    margin-right: 500px;
+    padding-bottom: 50px;
+    padding-top: 30px;
+    margin-top: 30px;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 15px
+}
+
+.form {
+    text-align: center;
+    
+}
+
+.ext {
+    color: red;
+    font-weight: bold;
+}
+
+.usersContainer {
+    background-color: #c0cccb;
+}
+
+.LogOut {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+}
+
+.usageContainer {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    width: 15%;
+    text-align:center;
+    padding: 15px;
+    border-radius: 15px
+}
+
+.usageBar {
+    background-color: lightgray;
+    border-radius: 5px
+}
+
+.usageUsage {
+    background-color: rgb(86, 86, 189);
+}
+
+.UploadContainer {
+    position: absolute;
+    left: 17%;
+    top: 150px;
+    width: 70%;
+}
+
+.fileContainer {
+    background-color: rgb(238, 235, 235);
+    padding: 2px;
+    border-radius: 10px
+}
+
+.typeContainer {
+    text-align: center;
+    background-color: rgb(214, 131, 21);
+    width: 3%;
+    border-radius: 10px;
+    color: white;
+}

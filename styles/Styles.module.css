@@ -66,3 +66,10 @@
     border-radius: 10px;
     color: white;
 }
+
+.DeleteButton {
+    position: absolute;
+    right: 2%;
+    height: 25px;
+    width: auto;
+}

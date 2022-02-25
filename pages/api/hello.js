@@ -123,7 +123,7 @@ app.post('/files/upload',upload.single('file') ,function (req, res) {
         if (err) console.log('ERROR: ' + err);
       });
       const Link = `${name}`
-      db.run(`INSERT INTO Files (OriginalName,name,Owner) VALUES ('${oldName}','${Link}','${req.body.name}')`);
+      db.run(`INSERT INTO Files (OriginalName,name,Owner,size) VALUES ('${oldName}','${Link}','${req.body.name}','${req.file.size}')`);
       
       db.all(`SELECT * FROM Users WHERE username = "${req.body.name}"`, function (err, rows) {
         const d = rows[0]
@@ -169,7 +169,33 @@ app.get('/download/:user/:name',function (req, res) {
 })
 
 app.delete('/files/delete',function (req, res) {
-  
+  const sqlite3 = require('sqlite3').verbose();
+  let db = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      return err;
+    }
+  })
+  db.all(`SELECT * FROM Files WHERE Owner = "${req.query.username}" AND name = "${req.query.name}"`, function (err, rows) {
+    const row = rows[0]
+
+    db.all(`SELECT * FROM Users WHERE username = "${req.query.username}"`, function (err, rowss) {
+      const d = rowss[0]
+      const sum = d.used - row.size
+      db.all(`UPDATE Users SET used = '${sum}' WHERE username ='${req.query.username}'`)
+    })
+    db.run(`DELETE FROM Files WHERE name = "${req.query.name}" AND Owner = "${req.query.username}"`)
+
+    fs.unlink(`Files/${row.name}`, function (err) {
+      if (err) throw err;
+      console.log('File deleted!');
+    });
+  })
+
+  res.json({status:true})
+})
+
+app.get('/public/:name',function (req, res) {
+  res.sendFile(__dirname+`/public/${req.params.name}`)
 })
 
 app.listen(3001)

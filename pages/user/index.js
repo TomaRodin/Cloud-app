@@ -6,6 +6,7 @@ import styles from '../../styles/Styles.module.css'
 import Router from 'next/router'
 import Progressbar from './components/Progressbar.js'
 import Form from './components/Form'
+import FileContainer from './components/FileContainer'
 
 export default function index() {
 
@@ -24,6 +25,18 @@ export default function index() {
     function Download(e) {
         const user = cookie.get("LoggedIn")
         window.location.replace(`http://localhost:3001/download/${user}/${e.target.value}`)
+    }
+
+    function Delete(name) {
+        axios.delete('http://localhost:3001/files/delete', {
+            params: { username: cookie.get('LoggedIn'),name:name},
+            headers: { 'Content-Type': 'application/json'}
+        })
+        .then(response => {
+            if (response.data.status === true) {
+                setRefresh(refresh+1)
+            }
+        })
     }
 
     useEffect(() => {
@@ -84,13 +97,7 @@ export default function index() {
             {
                 Filesdata.map(file => {
                     return(
-                        <div>
-                            <div className={styles.fileContainer}>
-                                    <h3>{file.OriginalName}</h3>
-                                    <button value={file.name} onClick={Download}>Download</button>
-                            </div>
-                            <br />
-                        </div>
+                        <FileContainer data={file} Download={Download} Delete={Delete} />
                     )
                 })
             }

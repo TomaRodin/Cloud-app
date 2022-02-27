@@ -195,4 +195,24 @@ app.get('/public/:name',function (req, res) {
   res.sendFile(__dirname+`/public/${req.params.name}`)
 })
 
+app.delete('/user/delete',function (req, res) {
+  const sqlite3 = require('sqlite3').verbose();
+  let db = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      return err;
+    }
+  })
+  db.all(`SELECT * FROM Files WHERE Owner = "${req.query.username}"`, function (err, rows) {
+    rows.map(file => {
+      db.run(`DELETE FROM Files WHERE name = "${file.name}"`)
+      fs.unlink(`Files/${file.name}`, function (err) {
+        if (err) throw err;
+      });
+    })
+  })
+  db.run(`DELETE FROM Users WHERE username = "${req.query.username}"`)
+
+  res.json({success: true})
+})
+
 app.listen(3001)

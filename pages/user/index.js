@@ -39,6 +39,19 @@ export default function index() {
         })
     }
 
+    function DeleteAccount() {
+        axios.delete('http://localhost:3001/user/delete', {
+            params: { username: cookie.get('LoggedIn')},
+            headers: { 'Content-Type': 'application/json'}
+        })
+        .then(response => {
+            if (response.data.success === true) {
+                cookie.remove("LoggedIn")
+                location.reload();
+            }
+        })
+    }
+
     useEffect(() => {
         axios.get('http://localhost:3001/files', {
             params: { username: cookie.get('LoggedIn') },
@@ -83,7 +96,10 @@ export default function index() {
             <div className={styles.typeContainer}>
                 <p>{data.type}</p>
             </div>
-            <button className={styles.LogOut} onClick={LogOut} >Log Out</button>
+            <div className={styles.LogOut}>
+                <button onClick={LogOut} >Log Out</button>
+                <button onClick={DeleteAccount}>Delete Account</button>
+            </div>
             <hr />
             <div className={styles.usageContainer}>
                 <h3>Usage:</h3>

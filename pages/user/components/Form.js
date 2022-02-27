@@ -11,6 +11,7 @@ const Form = (props) => {
     const [Label, setLabel] = useState();
   
     const handleSubmit = (event) => {
+      setLabel("")
       event.preventDefault()
       const formData = new FormData();
       formData.append('file', selectedFile);

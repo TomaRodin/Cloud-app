@@ -13,10 +13,6 @@ export default function index() {
     const [isSame, setIsSame] = useState("")
     const [isDisabled, setIsDisabled] = useState(true)
 
-    const Redirect = () => {
-        Router.push('/user')
-    }
-
     const handleChange = () => {
         if (password.current.value !== confirmPassword.current.value) {
             setIsSame("Confirm Password and Password are not same")
@@ -49,13 +45,13 @@ export default function index() {
                 method: 'POST'
             })
                 .then(response => {
+                    console.log(response)
                     if (response) {
-                        setExt("Exist")
-                        return false
+                        cookie.set('LoggedIn', username.current.value, { path: "/" })
+                        window.location.href = 'http://localhost:3000/user'
                     }
                     else {
-                        cookie.set('LoggedIn', username.current.value, { path: "/" })
-                        Router.push('/user')
+                        setExt("Exist")
                     }
                 })
 
@@ -101,6 +97,6 @@ export default function index() {
         )
     }
     else {
-        Redirect()
+        window.location.href = 'http://localhost:3000/user'
     }
 }

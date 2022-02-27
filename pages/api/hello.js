@@ -70,7 +70,7 @@ app.get("/data", basicAuth({ users: { 'admin': 'admin123' } }), function (req, r
     const row = rows[0]
     const usage = row.used / 1000000000
     const usedd = usage*100
-    const used = Math.round(usedd * 1000) / 1000
+    const used = Math.round(usedd * 10) / 10
     res.json({ username: row.username, id: row.ID, used: used, type: row.type })
   })
 
@@ -89,12 +89,9 @@ app.post("/register", basicAuth({ users: { 'admin': 'admin123' } }), function (r
         const sqlite3 = require('sqlite3').verbose();
         let db = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
           db.run(`INSERT INTO Users (username,password,type,used) VALUES ('${req.body.username}','${password}','${type}',${0})`);
-
+          res.json({success: true })
         })
 
-      }
-      else {
-        res.json({ exist: true })
       }
     })
   })

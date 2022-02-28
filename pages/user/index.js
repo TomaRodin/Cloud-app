@@ -52,6 +52,14 @@ export default function index() {
         })
     }
 
+    function SortSize() {
+        setFilesData(
+            [...Filesdata].sort(function(a,b){
+              return b.size - a.size;
+            })
+        )
+    }
+
     useEffect(() => {
         axios.get('http://localhost:3001/files', {
             params: { username: cookie.get('LoggedIn') },
@@ -107,7 +115,7 @@ export default function index() {
                 <p>Free: 1GB</p>
             </div>
             <div className={styles.UploadContainer}>
-                <Form setRefresh={setRefresh} refresh={refresh} />
+                <Form setRefresh={setRefresh} refresh={refresh} SortSize={SortSize} />
                 <hr />
             
             {

@@ -47,12 +47,26 @@ const Form = (props) => {
       setSelectedFile(event.target.files[0])
     }
 
+    const handleSelect = (e) => {
+
+      if (e.target.value === "size") {
+        props.SortSize()
+      }
+      else if (e.target.value === "last") {
+        props.setRefresh(props.refresh+1)
+      }
+    }
+
   
     return (
       <form id="form" onSubmit={handleSubmit}>
         <input type="file" name="upload_file" onChange={handleFileSelect} />
         <input type="submit" value="Upload File" />
         <p>{Label}</p>
+        <select onChange={handleSelect}>
+          <option value="last" >Last Modified</option>
+          <option value="size" >Size (Bigger to smaller)</option>
+        </select>
       </form>
     )
   };

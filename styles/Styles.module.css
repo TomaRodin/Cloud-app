@@ -73,3 +73,60 @@
     height: 25px;
     width: auto;
 }
+
+.ShareButton {
+    height: 25px;
+    width: auto;
+    position: absolute;
+    right: 5%
+}
+
+.ShareContainer {
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.SearchShareContainer {
+    background-color: rgb(255, 255, 255);
+    padding-left: 150px;
+    padding-right: 150px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    border-radius: 15px;
+}
+
+.SharedButton {
+    position: absolute;
+    right: 2%;
+    top: 10%;
+    font-size: 30px;
+}
+
+.SharedFileContainer {
+    padding-top: 90px;
+}
+
+.ShContainer {
+    margin-left: 17%;
+    margin-top: 1%;
+    margin-right: 15%;
+}
+
+.PreviewImage {
+    margin-left: 2%;
+    height: 75px;
+    width: auto;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+.PreviewImageContainer {
+    margin-left: 15px;
+}

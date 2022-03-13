@@ -7,6 +7,7 @@ import Router from 'next/router'
 import Progressbar from './components/Progressbar.js'
 import Form from './components/Form'
 import FileContainer from './components/FileContainer'
+import SharedFile from './components/SharedFile'
 
 export default function index() {
 
@@ -15,6 +16,8 @@ export default function index() {
     const [isLoading, setIsLoading] = useState(true)
     const cookie = new Cookie();
     const [refresh, setRefresh] = useState(0)
+    const [isOpen, setIsOpen] = useState(<div></div>);
+    const [Sh, setSh] = useState([]);
 
     function LogOut() {
         const cookie = new Cookie();
@@ -115,17 +118,29 @@ export default function index() {
                 <p>Free: 1GB</p>
             </div>
             <div className={styles.UploadContainer}>
-                <Form setRefresh={setRefresh} refresh={refresh} SortSize={SortSize} />
+                <Form setRefresh={setRefresh} Sh={Sh} setSh={setSh} setFilesData={setFilesData} refresh={refresh} SortSize={SortSize} />
                 <hr />
             
             {
                 Filesdata.map(file => {
                     return(
-                        <FileContainer data={file} Download={Download} Delete={Delete} />
+                        <FileContainer setIsOpen={setIsOpen} data={file} Download={Download} Delete={Delete} />
                     )
                 })
             }
             </div>
+
+            <div>    
+            {
+                Sh.map(sharedfile => {
+                    return(
+                        <SharedFile data={sharedfile} />
+                    )
+                })
+            }
+            </div>
+
+            {isOpen}
         </div>
     )
 }

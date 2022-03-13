@@ -3,6 +3,7 @@ import React from 'react'
 import {useState} from 'react'
 import axios from 'axios'
 import Cookie from 'universal-cookie'
+import styles from '../../../styles/Styles.module.css'
 
 
 const Form = (props) => {
@@ -57,6 +58,21 @@ const Form = (props) => {
       }
     }
 
+    function handleShared() {
+      if (props.Sh.length > 1) {
+        props.setSh([])
+        props.setRefresh(props.refresh+1)
+      }
+      else {
+      axios.get('http://localhost:3001/ShareData/'+cookie.get('LoggedIn'))
+      .then (response => {
+        props.setFilesData([])
+        props.setSh(response.data)
+      })
+      }
+
+    }
+
   
     return (
       <form id="form" onSubmit={handleSubmit}>
@@ -67,6 +83,7 @@ const Form = (props) => {
           <option value="last" >Last Modified</option>
           <option value="size" >Size (Bigger to smaller)</option>
         </select>
+        <a className={styles.SharedButton} onClick={handleShared} >Shared</a>
       </form>
     )
   };

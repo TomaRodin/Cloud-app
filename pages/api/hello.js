@@ -182,6 +182,8 @@ app.delete('/files/delete',function (req, res) {
     })
     db.run(`DELETE FROM Files WHERE name = "${req.query.name}" AND Owner = "${req.query.username}"`)
 
+    db.run(`DELETE FROM Share WHERE sender = "${req.query.username}" AND file = "${req.query.name}"`)
+
     fs.unlink(`Files/${row.name}`, function (err) {
       if (err) throw err;
       console.log('File deleted!');
@@ -213,6 +215,77 @@ app.delete('/user/delete',function (req, res) {
   db.run(`DELETE FROM Users WHERE username = "${req.query.username}"`)
 
   res.json({success: true})
+})
+
+app.get('/search/:name', function (req, res) {
+  console.log(req.params.name)
+  const sqlite3 = require('sqlite3').verbose();
+  let db = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      return err;
+    }
+  })
+  db.all(`SELECT * FROM Users WHERE username LIKE "%${req.params.name}%"` , function (err, rows) {
+    console.log(rows)
+    res.json(rows)
+  })  
+})
+
+app.post('/share',function (req, res) {
+  const data = req.body.data
+  const sqlite3 = require('sqlite3').verbose();
+  let db = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
+    db.all(`SELECT * FROM Files WHERE Owner = "${data.sender}"`, function (err, rows) {
+      const row = rows[0]
+      db.run(`INSERT INTO Share (sender,recipient,file) VALUES ('${data.sender}','${data.recipient}','${row.OriginalName}')`);
+    })
+    res.json({success: true })
+  })
+})
+
+app.get('/ShareData/:name',function (req, res) {
+  const sqlite3 = require('sqlite3').verbose();
+  let db = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      return err;
+    }
+  })
+  db.all(`SELECT * FROM Users WHERE username="${req.params.name}"` , function (err, rows) {
+    const row = rows[0]
+    db.all(`SELECT * FROM Share WHERE recipient="${row.ID}"` , function (err, rows) {
+      res.json(rows)
+    })
+  })  
+})
+
+app.get('/shared/download/:user/:name',function (req, res) {
+  const sqlite3 = require('sqlite3').verbose();
+  let db = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      return err;
+    }
+  })
+  db.all(`SELECT * FROM Users WHERE username="${req.params.user}"` , function (err, rows) {
+    const row = rows[0]
+    db.all(`SELECT * FROM Share WHERE recipient = "${row.ID}" AND file = "${req.params.name}"`, function (err, rowss) {
+      const roww = rowss[0]
+      if (rows.length < 1) {
+        console.log("Can't find")
+      }
+      else {
+        db.all(`SELECT * FROM Files WHERE OriginalName = "${req.params.name}" AND Owner = "${roww.sender}"` , function (err, rows) {
+          const row = rows[0]
+          console.log(row)
+          res.download(__dirname+`/Files/${row.name}`)
+          console.log("Downloaded")
+        })
+      }
+    })
+  })
+})
+
+app.get("/preview/:name", function (req, res) {
+  res.sendFile(__dirname+`/Files/${req.params.name}`)
 })
 
 app.listen(3001)

@@ -10,6 +10,7 @@ const Form = (props) => {
     const [selectedFile, setSelectedFile] = React.useState(null);
     const cookie = new Cookie();
     const [Label, setLabel] = useState();
+    const [clicked, setClicked] = useState(false);
   
     const handleSubmit = (event) => {
       setLabel("")
@@ -59,32 +60,38 @@ const Form = (props) => {
     }
 
     function handleShared() {
-      if (props.Sh.length > 1) {
+      if (clicked) {
         props.setSh([])
         props.setRefresh(props.refresh+1)
+        setClicked(false)
       }
       else {
-      axios.get('http://localhost:3001/ShareData/'+cookie.get('LoggedIn'))
-      .then (response => {
-        props.setFilesData([])
-        props.setSh(response.data)
-      })
+        setClicked(true)
+        axios.get('http://localhost:3001/ShareData/'+cookie.get('LoggedIn'))
+        .then (response => {
+          props.setFilesData([])
+          props.setSh(response.data)
+        })
       }
 
     }
 
   
     return (
-      <form id="form" onSubmit={handleSubmit}>
-        <input type="file" name="upload_file" onChange={handleFileSelect} />
-        <input type="submit" value="Upload File" />
-        <p>{Label}</p>
-        <select onChange={handleSelect}>
-          <option value="last" >Last Modified</option>
-          <option value="size" >Size (Bigger to smaller)</option>
-        </select>
-        <a className={styles.SharedButton} onClick={handleShared} >Shared</a>
-      </form>
+      <div>
+        <form id="form" onSubmit={handleSubmit}>
+          <input type="file" name="upload_file" onChange={handleFileSelect} />
+          <input type="submit" value="Upload File" />
+          <p>{Label}</p>
+          <select onChange={handleSelect}>
+            <option value="last" >Last Modified</option>
+            <option value="size" >Size (Bigger to smaller)</option>
+          </select>
+        </form>
+
+        <button className={styles.SharedButton} onClick={handleShared} >Shared</button>
+
+      </div>
     )
   };
   

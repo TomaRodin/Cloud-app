@@ -182,7 +182,7 @@ app.delete('/files/delete',function (req, res) {
     })
     db.run(`DELETE FROM Files WHERE name = "${req.query.name}" AND Owner = "${req.query.username}"`)
 
-    db.run(`DELETE FROM Share WHERE sender = "${req.query.username}" AND file = "${req.query.name}"`)
+    db.run(`DELETE FROM Share WHERE sender = "${req.query.username}" AND file = "${row.OriginalName}"`)
 
     fs.unlink(`Files/${row.name}`, function (err) {
       if (err) throw err;
@@ -217,7 +217,7 @@ app.delete('/user/delete',function (req, res) {
   res.json({success: true})
 })
 
-app.get('/search/:name', function (req, res) {
+app.get('/search/:name/:user', function (req, res) {
   console.log(req.params.name)
   const sqlite3 = require('sqlite3').verbose();
   let db = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -227,7 +227,8 @@ app.get('/search/:name', function (req, res) {
   })
   db.all(`SELECT * FROM Users WHERE username LIKE "%${req.params.name}%"` , function (err, rows) {
     console.log(rows)
-    res.json(rows)
+    var filtered = rows.filter(function(el) { return el.username != `${req.params.user}`; });
+    res.json(filtered)
   })  
 })
 
@@ -235,12 +236,16 @@ app.post('/share',function (req, res) {
   const data = req.body.data
   const sqlite3 = require('sqlite3').verbose();
   let db = new sqlite3.Database('database.db', sqlite3.OPEN_READWRITE, (err) => {
-    db.all(`SELECT * FROM Files WHERE Owner = "${data.sender}"`, function (err, rows) {
-      const row = rows[0]
-      db.run(`INSERT INTO Share (sender,recipient,file) VALUES ('${data.sender}','${data.recipient}','${row.OriginalName}')`);
-    })
-    res.json({success: true })
+    if (err) {
+      return err;
+    }
   })
+  db.all(`SELECT * FROM Files WHERE Owner = "${data.sender}"`, function (err, rows) {
+    const row = rows[0]
+    db.run(`INSERT INTO Share (sender,recipient,file) VALUES ('${data.sender}','${data.recipient}','${row.OriginalName}')`);
+  })
+  res.json({success: true })
+
 })
 
 app.get('/ShareData/:name',function (req, res) {
@@ -269,7 +274,7 @@ app.get('/shared/download/:user/:name',function (req, res) {
     const row = rows[0]
     db.all(`SELECT * FROM Share WHERE recipient = "${row.ID}" AND file = "${req.params.name}"`, function (err, rowss) {
       const roww = rowss[0]
-      if (rows.length < 1) {
+      if (rowss.length < 1) {
         console.log("Can't find")
       }
       else {

@@ -36,6 +36,12 @@ export default function index() {
         })
     }
 
+    const KeyHandler = (e) => {
+        if (e.key === 'Enter') {
+            handleSubmit()
+        }    
+    }
+
 
     useEffect(() => {
         if (cookie.get('LoggedIn') !== undefined) {
@@ -50,7 +56,7 @@ export default function index() {
                     <h1>Login</h1>
                     <input type="text" placeholder="Username:" ref={username} ></input>
                     <br />
-                    <input type="password" placeholder="Password:" ref={password} ></input>
+                    <input type="password" placeholder="Password:" ref={password} onKeyDown={KeyHandler} ></input>
                     <br />
                     {isFalse}
                     <br />

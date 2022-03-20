@@ -44,6 +44,29 @@ export default function FileContainer(props) {
         )
     }
 
+    else if (FileExtension(file.name) === 'mp3' || FileExtension(file.name) === 'flac' || FileExtension(file.name) === 'wav' || FileExtension(file.name) === 'm4a') {
+        const src = `http://localhost:3001/preview/${file.name}`
+        const type = "audio/"+FileExtension(file.name)
+        return (
+            <div>
+                <div className={styles.fileContainer}>
+                    <div>
+                        <audio controls>
+                            <source src={src} type={type} />
+                        </audio>
+                    </div>
+                    <div className={styles.PreviewImageContainer}>
+                        <h3>{file.OriginalName}</h3>
+                        <button value={file.name} onClick={props.Download}>Download</button>
+                        <img value={file.name} onClick={Delete}  className={styles.DeleteButton} src="http://localhost:3001/public/delete.svg"></img>
+                        <img value={file.name} onClick={Share} className={styles.ShareButton} src="http://localhost:3001/public/share.svg"></img>
+                    </div>
+                </div>
+                <br />
+            </div>
+        )
+    }
+
     return (
         <div>
             <div className={styles.fileContainer}>

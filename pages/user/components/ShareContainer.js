@@ -13,7 +13,9 @@ export default function ShareContainer(props) {
     }
 
     function Search() {
-        axios.get('http://localhost:3001/search/'+search.current.value)
+        const cookie = new Cookie();
+        
+        axios.get(`http://localhost:3001/search/${search.current.value}/${cookie.get('LoggedIn')}`)
         .then(function (response) {
             console.log(response.data)
             setData(response.data)
